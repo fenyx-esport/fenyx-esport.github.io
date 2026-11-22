@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fenyx – Admin Blog</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+
+  <!-- Firebase v10 compat -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+  <style>
+    :root {
+      --orange:  #ff6a00;
+      --orange2: #ffa040;
+      --bg:      #060606;
+      --surface: #0f0f0f;
+      --surface2:#161616;
+      --border:  rgba(255,106,0,.15);
+      --text:    #e0e0e0;
+      --muted:   #666;
+      --red:     #cc2200;
+      --green:   #00bb60;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      background:var(--bg);
+      color:var(--text);
+      font-family:'DM Sans',sans-serif;
+      min-height:100vh;
+    }
+
+    /* ═══════════════ LOGIN SCREEN ═══════════════ */
+    #loginScreen {
+      min-height:100vh;
+      display:flex; flex-direction:column;
+      align-items:center; justify-content:center;
+      background: radial-gradient(ellipse 60% 60% at 50% 0%, rgba(139,0,0,.35), transparent),
+                  var(--bg);
+      padding:20px;
+    }
+    #loginScreen .brand {
+      font-family:'Bebas Neue',sans-serif;
+      font-size:3rem; letter-spacing:10px;
+      color:#fff; text-shadow:0 0 40px rgba(255,106,0,.5);
+      margin-bottom:4px;
+    }
+    #loginScreen .brand span { color:var(--orange); }
+    #loginScreen .sub {
+      font-size:.8rem; letter-spacing:3px; color:var(--muted);
+      text-transform:uppercase; margin-bottom:40px;
+    }
+    .login-box {
+      background:var(--surface);
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:36px 40px;
+      width:100%; max-width:400px;
+      box-shadow:0 0 60px rgba(255,106,0,.08);
+    }
+    .login-box h2 {
+      font-family:'Bebas Neue',sans-serif;
+      font-size:1.6rem; letter-spacing:4px;
+      color:var(--orange); margin-bottom:24px;
+    }
+    .field { margin-bottom:18px; }
+    .field label {
+      display:block; font-size:.78rem; letter-spacing:1.5px;
+      text-transform:uppercase; color:var(--muted);
+      margin-bottom:6px;
+    }
+    .field input {
+      width:100%; background:var(--surface2);
+      border:1px solid var(--border);
+      border-radius:8px; padding:12px 14px;
+      color:#fff; font-family:'DM Sans',sans-serif; font-size:.95rem;
+      outline:none; transition:.2s;
+    }
+    .field input:focus { border-color:var(--orange); box-shadow:0 0 0 2px rgba(255,106,0,.12); }
+    .btn-primary {
+      width:100%; padding:13px;
+      background:var(--orange); color:#000;
+      font-family:'Bebas Neue',sans-serif;
+      font-size:1.15rem; letter-spacing:4px;
+      border:none; border-radius:8px;
+      cursor:pointer; transition:.2s;
+    }
+    .btn-primary:hover { background:var(--orange2); }
+    .login-error {
+      font-size:.82rem; color:#ff4444;
+      margin-top:14px; text-align:center;
+      min-height:20px;
+    }
+
+    /* ═══════════════ ADMIN PANEL ═══════════════ */
+    #adminPanel { display:none; }
+
+    .topbar {
+      position:sticky; top:0; z-index:100;
+      background:rgba(6,6,6,.92); backdrop-filter:blur(10px);
+      border-bottom:1px solid var(--border);
+      display:flex; align-items:center; gap:16px;
+      padding:14px 28px;
+    }
+    .topbar .tb-brand {
+      font-family:'Bebas Neue',sans-serif;
+      font-size:1.4rem; letter-spacing:5px;
+      color:var(--orange);
+    }
+    .topbar .tb-sep { width:1px; height:24px; background:var(--border); }
+    .topbar .tb-title {
+      font-size:.85rem; color:var(--muted);
+      letter-spacing:1px;
+    }
+    .topbar .spacer { flex:1; }
+    .topbar .view-btn {
+      font-size:.82rem; color:#888; text-decoration:none;
+      border:1px solid var(--border); padding:7px 16px;
+      border-radius:6px; transition:.2s;
+    }
+    .topbar .view-btn:hover { border-color:var(--orange); color:var(--orange); }
+    .topbar .logout-btn {
+      font-size:.82rem; color:var(--red);
+      background:none; border:1px solid rgba(204,34,0,.3);
+      padding:7px 16px; border-radius:6px;
+      cursor:pointer; transition:.2s;
+      font-family:'DM Sans',sans-serif;
+    }
+    .topbar .logout-btn:hover { background:rgba(204,34,0,.1); }
+
+    .admin-layout {
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:28px;
+      max-width:1200px;
+      margin:0 auto;
+      padding:32px 24px 60px;
+    }
+    @media(max-width:768px) {
+      .admin-layout { grid-template-columns:1fr; }
+    }
+
+    /* ── Panel cards ── */
+    .panel {
+      background:var(--surface);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:28px;
+    }
+    .panel h2 {
+      font-family:'Bebas Neue',sans-serif;
+      font-size:1.5rem; letter-spacing:4px;
+      color:var(--orange); margin-bottom:22px;
+      display:flex; align-items:center; gap:10px;
+    }
+
+    /* ── Form inputs ── */
+    .form-group { margin-bottom:16px; }
+    .form-group label {
+      display:block; font-size:.75rem;
+      letter-spacing:1.5px; text-transform:uppercase;
+      color:var(--muted); margin-bottom:6px;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width:100%; background:var(--surface2);
+      border:1px solid var(--border);
+      border-radius:8px; padding:11px 14px;
+      color:#fff; font-family:'DM Sans',sans-serif;
+      font-size:.92rem; outline:none; transition:.2s;
+    }
+    .form-group textarea { resize:vertical; min-height:120px; line-height:1.6; }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color:var(--orange);
+      box-shadow:0 0 0 2px rgba(255,106,0,.1);
+    }
+    .form-group select option { background:#111; }
+
+    /* match-only fields */
+    .match-fields { display:none; }
+    .match-fields.show { display:block; }
+
+    .score-row {
+      display:grid; grid-template-columns:1fr auto 1fr;
+      gap:10px; align-items:center;
+    }
+    .score-row .vs-label {
+      text-align:center; font-family:'Bebas Neue',sans-serif;
+      font-size:1.1rem; color:var(--muted); letter-spacing:2px;
+    }
+
+    .form-submit {
+      display:flex; gap:12px; margin-top:4px;
+    }
+    .btn-submit {
+      flex:1; padding:12px;
+      background:var(--orange); color:#000;
+      font-family:'Bebas Neue',sans-serif;
+      font-size:1.05rem; letter-spacing:3px;
+      border:none; border-radius:8px;
+      cursor:pointer; transition:.2s;
+    }
+    .btn-submit:hover { background:var(--orange2); }
+    .btn-cancel {
+      padding:12px 20px;
+      background:none; color:var(--muted);
+      font-family:'DM Sans',sans-serif; font-size:.88rem;
+      border:1px solid var(--border); border-radius:8px;
+      cursor:pointer; transition:.2s;
+    }
+    .btn-cancel:hover { border-color:#555; color:#ccc; }
+
+    .form-feedback {
+      margin-top:12px; font-size:.84rem;
+      min-height:20px; text-align:center;
+    }
+    .form-feedback.ok  { color:var(--green); }
+    .form-feedback.err { color:#ff4444; }
+
+    /* ── Posts list ── */
+    .posts-list { display:flex; flex-direction:column; gap:10px; }
+    .post-row {
+      background:var(--surface2);
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:14px 16px;
+      display:flex; align-items:center; gap:12px;
+      transition:.2s;
+    }
+    .post-row:hover { border-color:rgba(255,106,0,.35); }
+    .post-row .pr-type {
+      font-family:'Bebas Neue',sans-serif;
+      font-size:.75rem; letter-spacing:2px;
+      padding:3px 9px; border-radius:3px;
+      flex-shrink:0;
+    }
+    .post-row .pr-type.article { background:rgba(255,106,0,.12); color:var(--orange); }
+    .post-row .pr-type.match   { background:rgba(62,191,255,.1); color:#3ebfff; }
+    .post-row .pr-title {
+      flex:1; font-size:.9rem; color:#ddd;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    .post-row .pr-date { font-size:.75rem; color:var(--muted); flex-shrink:0; }
+    .post-row .pr-actions { display:flex; gap:8px; }
+    .btn-edit, .btn-delete {
+      font-size:.75rem; padding:5px 12px;
+      border-radius:5px; cursor:pointer;
+      font-family:'DM Sans',sans-serif; transition:.2s;
+      border:1px solid;
+    }
+    .btn-edit   { background:none; color:#aaa; border-color:var(--border); }
+    .btn-edit:hover { border-color:var(--orange); color:var(--orange); }
+    .btn-delete { background:none; color:#884444; border-color:rgba(204,34,0,.3); }
+    .btn-delete:hover { background:rgba(204,34,0,.1); color:#ff4444; }
+
+    .list-empty { color:var(--muted); font-size:.88rem; text-align:center; padding:30px 0; }
+    .list-loading { text-align:center; color:var(--muted); padding:30px 0; }
+
+    /* ── Stats strip ── */
+    .stats-strip {
+      grid-column:1/-1;
+      display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+      gap:16px;
+    }
+    .stat-card {
+      background:var(--surface);
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:18px 20px;
+      text-align:center;
+    }
+    .stat-card .s-val {
+      font-family:'Bebas Neue',sans-serif;
+      font-size:2.4rem; letter-spacing:3px;
+      color:var(--orange);
+    }
+    .stat-card .s-lbl {
+      font-size:.75rem; letter-spacing:2px; color:var(--muted);
+      text-transform:uppercase; margin-top:2px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══════════ LOGIN ══════════ -->
+  <div id="loginScreen">
+    <p class="brand">FENYX <span>✦</span></p>
+    <p class="sub">Espace Administration</p>
+    <div class="login-box">
+      <h2>Connexion</h2>
+      <div class="field">
+        <label>Email</label>
+        <input type="email" id="loginEmail" placeholder="admin@fenyx.gg" autocomplete="username">
+      </div>
+      <div class="field">
+        <label>Mot de passe</label>
+        <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <button class="btn-primary" id="loginBtn">SE CONNECTER</button>
+      <p class="login-error" id="loginError"></p>
+    </div>
+  </div>
+
+  <!-- ══════════ ADMIN PANEL ══════════ -->
+  <div id="adminPanel">
+
+    <!-- Topbar -->
+    <div class="topbar">
+      <span class="tb-brand">FENYX</span>
+      <div class="tb-sep"></div>
+      <span class="tb-title">Admin Blog</span>
+      <div class="spacer"></div>
+      <a href="https://fenyx-esport.github.io/blog/" class="view-btn" target="_blank">👁 Voir le blog</a>
+      <button class="logout-btn" id="logoutBtn">Déconnexion</button>
+    </div>
+
+    <div class="admin-layout">
+
+      <!-- Stats -->
+      <div class="stats-strip">
+        <div class="stat-card">
+          <div class="s-val" id="statTotal">—</div>
+          <div class="s-lbl">Publications</div>
+        </div>
+        <div class="stat-card">
+          <div class="s-val" id="statArticles">—</div>
+          <div class="s-lbl">Articles</div>
+        </div>
+        <div class="stat-card">
+          <div class="s-val" id="statMatchs">—</div>
+          <div class="s-lbl">Matchs</div>
+        </div>
+        <div class="stat-card">
+          <div class="s-val" id="statWins">—</div>
+          <div class="s-lbl">Victoires</div>
+        </div>
+      </div>
+
+      <!-- ── Form ── -->
+      <div class="panel">
+        <h2 id="formTitle">✏️ Nouveau post</h2>
+
+        <input type="hidden" id="editId">
+
+        <div class="form-group">
+          <label>Type de publication</label>
+          <select id="postType">
+            <option value="article">📝 Article</option>
+            <option value="match">⚔ Match</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Titre</label>
+          <input type="text" id="postTitle" placeholder="Ex : Victoire en quart de finale…">
+        </div>
+
+        <div class="form-group">
+          <label>Auteur</label>
+          <input type="text" id="postAuthor" placeholder="FY | Eliott14" value="FY | Staff">
+        </div>
+
+        <!-- Match-only fields -->
+        <div class="match-fields" id="matchFields">
+          <div class="form-group">
+            <label>Adversaire</label>
+            <input type="text" id="matchOpponent" placeholder="Nom de l'équipe adverse">
+          </div>
+          <div class="form-group">
+            <label>Score</label>
+            <div class="score-row">
+              <input type="number" id="scoreHome" placeholder="FY" min="0" max="99">
+              <span class="vs-label">VS</span>
+              <input type="number" id="scoreAway" placeholder="ADV" min="0" max="99">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Résultat</label>
+            <select id="matchResult">
+              <option value="win">🏆 Victoire</option>
+              <option value="loss">💀 Défaite</option>
+              <option value="draw">🤝 Nul</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Tournoi / Compétition</label>
+            <input type="text" id="matchTournament" placeholder="Ex : CRL, ligue ouverte…">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Contenu</label>
+          <textarea id="postContent" placeholder="Écris ici ton article ou le compte-rendu du match…"></textarea>
+        </div>
+
+        <div class="form-submit">
+          <button class="btn-submit" id="submitBtn">PUBLIER</button>
+          <button class="btn-cancel" id="cancelEdit" style="display:none">Annuler</button>
+        </div>
+        <p class="form-feedback" id="formFeedback"></p>
+      </div>
+
+      <!-- ── List ── -->
+      <div class="panel">
+        <h2>📋 Publications</h2>
+        <div class="posts-list" id="postsList">
+          <p class="list-loading">Chargement…</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+const firebaseConfig = {
+  apiKey: "AIzaSyDBANOjInM0aUlypnPFn8QVK71YdeTvudc",
+  authDomain: "fenyx-9ca56.firebaseapp.com",
+  projectId: "fenyx-9ca56",
+  storageBucket: "fenyx-9ca56.firebasestorage.app",
+  messagingSenderId: "473297020275",
+  appId: "1:473297020275:web:7f009f4b03de22f7911106",
+  measurementId: "G-CM28JYRKWP"
+};
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db   = firebase.firestore();
+
+    // ─── Auth ───────────────────────────────
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('adminPanel').style.display  = 'block';
+        loadPosts();
+      } else {
+        document.getElementById('loginScreen').style.display = 'flex';
+        document.getElementById('adminPanel').style.display  = 'none';
+      }
+    });
+
+    document.getElementById('loginBtn').addEventListener('click', async () => {
+      const email = document.getElementById('loginEmail').value.trim();
+      const pass  = document.getElementById('loginPassword').value;
+      const errEl = document.getElementById('loginError');
+      errEl.textContent = '';
+      try {
+        await auth.signInWithEmailAndPassword(email, pass);
+      } catch(e) {
+        errEl.textContent = e.code === 'auth/invalid-credential'
+          ? 'Email ou mot de passe incorrect.'
+          : e.message;
+      }
+    });
+
+    document.getElementById('loginPassword').addEventListener('keydown', e => {
+      if (e.key === 'Enter') document.getElementById('loginBtn').click();
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', () => auth.signOut());
+
+    // ─── Type toggle ────────────────────────
+    document.getElementById('postType').addEventListener('change', function() {
+      document.getElementById('matchFields').classList.toggle('show', this.value === 'match');
+    });
+
+    // ─── Firestore helpers ──────────────────
+    let posts = [];
+
+    async function loadPosts() {
+      const list = document.getElementById('postsList');
+      list.innerHTML = '<p class="list-loading">Chargement…</p>';
+      try {
+        const snap = await db.collection('posts').orderBy('createdAt','desc').get();
+        posts = snap.docs.map(d => ({ id:d.id, ...d.data() }));
+        renderList();
+        updateStats();
+      } catch(e) {
+        list.innerHTML = `<p class="list-empty">Erreur : ${e.message}</p>`;
+      }
+    }
+
+    function renderList() {
+      const list = document.getElementById('postsList');
+      if (!posts.length) { list.innerHTML = '<p class="list-empty">Aucune publication.</p>'; return; }
+
+      list.innerHTML = posts.map(p => {
+        const date = p.createdAt?.toDate
+          ? p.createdAt.toDate().toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'})
+          : '—';
+        return `
+          <div class="post-row">
+            <span class="pr-type ${p.type}">${p.type === 'match' ? 'MATCH' : 'ART.'}</span>
+            <span class="pr-title">${p.title}</span>
+            <span class="pr-date">${date}</span>
+            <div class="pr-actions">
+              <button class="btn-edit"   onclick="startEdit('${p.id}')">✏️</button>
+              <button class="btn-delete" onclick="deletePost('${p.id}')">🗑</button>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    function updateStats() {
+      const articles = posts.filter(p => p.type === 'article').length;
+      const matchs   = posts.filter(p => p.type === 'match').length;
+      const wins     = posts.filter(p => p.type === 'match' && p.result === 'win').length;
+      document.getElementById('statTotal').textContent    = posts.length;
+      document.getElementById('statArticles').textContent = articles;
+      document.getElementById('statMatchs').textContent   = matchs;
+      document.getElementById('statWins').textContent     = wins;
+    }
+
+    // ─── Submit (create / update) ────────────
+    document.getElementById('submitBtn').addEventListener('click', async () => {
+      const fb   = document.getElementById('formFeedback');
+      const type = document.getElementById('postType').value;
+      const title   = document.getElementById('postTitle').value.trim();
+      const author  = document.getElementById('postAuthor').value.trim();
+      const content = document.getElementById('postContent').value.trim();
+      const editId  = document.getElementById('editId').value;
+
+      if (!title || !content) { showFb('Titre et contenu requis.','err'); return; }
+
+      const data = { type, title, author, content };
+
+      if (type === 'match') {
+        data.opponent   = document.getElementById('matchOpponent').value.trim();
+        data.scoreHome  = parseInt(document.getElementById('scoreHome').value) || 0;
+        data.scoreAway  = parseInt(document.getElementById('scoreAway').value) || 0;
+        data.result     = document.getElementById('matchResult').value;
+        data.tournament = document.getElementById('matchTournament').value.trim();
+      }
+
+      try {
+        if (editId) {
+          await db.collection('posts').doc(editId).update(data);
+          showFb('Article mis à jour ✓','ok');
+          resetForm();
+        } else {
+          data.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+          await db.collection('posts').add(data);
+          showFb('Publié avec succès ✓','ok');
+          resetForm();
+        }
+        await loadPosts();
+      } catch(e) {
+        showFb('Erreur : ' + e.message, 'err');
+      }
+    });
+
+    // ─── Edit ────────────────────────────────
+    function startEdit(id) {
+      const p = posts.find(x => x.id === id);
+      if (!p) return;
+      document.getElementById('editId').value        = id;
+      document.getElementById('postType').value      = p.type;
+      document.getElementById('postTitle').value     = p.title;
+      document.getElementById('postAuthor').value    = p.author ?? '';
+      document.getElementById('postContent').value   = p.content ?? '';
+      document.getElementById('matchFields').classList.toggle('show', p.type === 'match');
+      if (p.type === 'match') {
+        document.getElementById('matchOpponent').value  = p.opponent ?? '';
+        document.getElementById('scoreHome').value      = p.scoreHome ?? '';
+        document.getElementById('scoreAway').value      = p.scoreAway ?? '';
+        document.getElementById('matchResult').value    = p.result ?? 'win';
+        document.getElementById('matchTournament').value= p.tournament ?? '';
+      }
+      document.getElementById('formTitle').textContent   = '✏️ Modifier';
+      document.getElementById('submitBtn').textContent   = 'METTRE À JOUR';
+      document.getElementById('cancelEdit').style.display = 'inline-block';
+      document.querySelector('.panel').scrollIntoView({behavior:'smooth'});
+    }
+
+    document.getElementById('cancelEdit').addEventListener('click', resetForm);
+
+    function resetForm() {
+      ['editId','postTitle','postContent','matchOpponent','scoreHome','scoreAway','matchTournament']
+        .forEach(id => document.getElementById(id).value = '');
+      document.getElementById('postType').value    = 'article';
+      document.getElementById('postAuthor').value  = 'FY | Staff';
+      document.getElementById('matchResult').value = 'win';
+      document.getElementById('matchFields').classList.remove('show');
+      document.getElementById('formTitle').textContent    = '✏️ Nouveau post';
+      document.getElementById('submitBtn').textContent    = 'PUBLIER';
+      document.getElementById('cancelEdit').style.display = 'none';
+      document.getElementById('formFeedback').textContent = '';
+    }
+
+    // ─── Delete ──────────────────────────────
+    async function deletePost(id) {
+      if (!confirm('Supprimer cette publication ?')) return;
+      await db.collection('posts').doc(id).delete();
+      await loadPosts();
+    }
+
+    // ─── Feedback ────────────────────────────
+    function showFb(msg, cls) {
+      const el = document.getElementById('formFeedback');
+      el.textContent = msg;
+      el.className   = 'form-feedback ' + cls;
+      setTimeout(() => { el.textContent = ''; el.className = 'form-feedback'; }, 4000);
+    }
+  </script>
+</body>
+</html>
