@@ -720,15 +720,13 @@
 </section>
 
 <footer>
-  © 2026 Fenyx Esport           site développé par <a href="https://onelevel-studio.github.io/">oneLevel studio</a>
+  © <span id="year">2027</span> Fenyx Esport           site développé par <a href="https://onelevel-studio.github.io/">oneLevel studio</a>
 </footer>
 <script>
 function toggleMenu() {
   document.getElementById("navMenu").classList.toggle("show");
 }
-</script>
-
-<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
   const firebaseConfig = {
     apiKey: "AIzaSyDBANOjInM0aUlypnPFn8QVK71YdeTvudc",
     authDomain: "fenyx-9ca56.firebaseapp.com",
@@ -775,7 +773,7 @@ function toggleMenu() {
         </div>
         <h3 class="lastmatch-title">${p.title ?? ''}</h3>
         ${date ? `<p class="lastmatch-date">${date}</p>` : ''}
-        <a href="./blogue/" class="lastmatch-link">Voir tous les résultats →</a>
+        <a href="./blog/" class="lastmatch-link">Voir tous les résultats →</a>
       `;
     } catch (e) {
       card.innerHTML = `<p class="lastmatch-empty">Erreur de chargement : ${e.message}</p>`;
