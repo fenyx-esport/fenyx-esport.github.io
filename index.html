@@ -466,12 +466,14 @@
       font-size: 2.5rem;
     }
 
-    .video-wrapper iframe {
-      width: 100%;
-      height: 500px;
-      border-radius: 20px;
-      box-shadow: 0 0 30px rgba(255, 106, 0, 0.6);
-    }
+.video-wrapper iframe {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  height: auto;
+  border: 0;
+  border-radius: 20px;
+  box-shadow: 0 0 30px rgba(255, 106, 0, 0.6);
+}
 
     .emote-section {
       padding: 80px 20px;
@@ -610,7 +612,7 @@
           </div>
           <h3>FY | Eliott14</h3>
           <p>Main Colt</p>
-          <p>Rôle : sniper</p>
+          <p>Rôle : support</p>
           <p>Top Brawlers :</p>
           <div class="brawlers">
             <img src="ruffs.webp" alt="Ruffs">
@@ -679,13 +681,17 @@
     </div>
   </section>
 
-  <section class="video-section" id="gameplay">
-  <h2 data-i18n="gameplayH2">🎮 Gameplay</h2>
+<section class="video-section" id="gameplay">
+  <h2>🎮 Gameplay</h2>
   <div class="video-wrapper">
-    <video controls poster="poster.jpg" width="100%" height="auto" style="border-radius:20px; box-shadow:0 0 30px rgba(255,106,0,0.6);">
-      <source src="gameplay.mp4" type="video/mp4">
-      Votre navigateur ne supporte pas la lecture de vidéos HTML5.
-    </video>
+    <iframe
+      src="https://www.youtube-nocookie.com/embed/HBAiscWFrd8"
+      title="Gameplay Fenyx Esport"
+      frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      allowfullscreen
+      loading="lazy">
+    </iframe>
   </div>
 </section>
   <section class="emote-section" id="emote">
