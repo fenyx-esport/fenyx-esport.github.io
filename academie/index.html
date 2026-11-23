@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="description" content="Fenyx Académie : roster secondaire de Fenyx Esport, formation de joueurs compétitifs sur Brawl Stars.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta property="og:title" content="Fenyx Académie - Roster secondaire de Fenyx Esport">
+  <meta property="og:description" content="Découvrez l'académie Fenyx : formation, coaching et scrims pour les futurs talents de Fenyx Esport sur Brawl Stars.">
+  <meta property="og:image" content="https://moi14212869.github.io/Fenyx/logo1.png">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://moi14212869.github.io/Fenyx/academie/">
+  <link rel="icon" href="https://moi14212869.github.io/Fenyx/logo2.ico" type="image/x-icon">
+  <title>Fenyx Académie</title>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, Helvetica, sans-serif; }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: linear-gradient(to bottom, #000000, #2a0000, #000000);
+      color: #ffffff;
+      padding-top: 70px;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* NAVBAR */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(10px);
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    }
+
+    .nav-container-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px;
+    }
+
+    .logo {
+      height: 45px;
+      transition: transform 0.3s ease;
+    }
+    .logo:hover {
+      transform: scale(1.1);
+    }
+
+    .nav-container {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .nav-container a {
+      color: #ff6a00;
+      text-decoration: none;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .nav-container a:hover {
+      color: #ffa500;
+    }
+
+    .menu-btn {
+      display: none;
+      font-size: 30px;
+      color: #ff6a00;
+      cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+      .menu-btn {
+        display: block;
+      }
+
+      .nav-container {
+        position: absolute;
+        top: 60px;
+        left: 0;
+        width: 100%;
+        background: rgba(0,0,0,0.95);
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px 0;
+        display: none;
+        text-align: center;
+      }
+
+      .nav-container.show {
+        display: flex;
+      }
+    }
+
+    /* HEADER */
+    header {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 100px 20px;
+      gap: 10px;
+    }
+
+    .logo-extra {
+      display: flex;
+      justify-content: center;
+      margin: 40px 0;
+    }
+
+    .logo-extra-box {
+      background: #ffffff;
+      border: 1px solid rgba(255, 106, 0, 0.25);
+      box-shadow: 0 0 25px rgba(255, 106, 0, 0.25);
+      border-radius: 20px;
+      padding: 30px 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .logo-extra-box:hover {
+      transform: scale(1.03);
+      box-shadow: 0 0 40px rgba(255, 106, 0, 0.6);
+    }
+
+    .logo-extra-box img {
+      max-width: 220px;
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+    }
+
+    header h1 {
+      font-size: clamp(2.5rem, 8vw, 4rem);
+      letter-spacing: 8px;
+      color: #ff6a00;
+      text-shadow: 0 0 20px rgba(255, 106, 0, 0.9);
+    }
+
+    header p {
+      margin-top: 20px;
+      font-size: 1.2rem;
+      color: #cccccc;
+    }
+
+    .badge-org {
+      margin-top: 18px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 18px;
+      border: 1px solid rgba(255,106,0,0.6);
+      border-radius: 30px;
+      background: rgba(255,106,0,0.08);
+      color: #ffa500;
+      font-size: 0.9rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .cta {
+      display: inline-block;
+      margin-top: 30px;
+      padding: 12px 25px;
+      background: #ff6a00;
+      border-radius: 10px;
+      color: white;
+      font-weight: bold;
+      text-decoration: none;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .cta:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 0 25px rgba(255,106,0,0.6);
+    }
+
+    /* SECTIONS */
+    section {
+      padding: 80px 20px;
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    h2 {
+      color: #ff6a00;
+      margin-bottom: 20px;
+      font-size: 2.5rem;
+    }
+
+    section#about p {
+      color: #ddd;
+      line-height: 1.6;
+      max-width: 800px;
+    }
+
+    section#about p + p {
+      margin-top: 15px;
+    }
+
+    /* CARDS */
+    .team {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px 20px;
+    }
+
+    .card {
+      background: linear-gradient(to bottom, #3a0000, #000000);
+      border-radius: 20px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 0 25px rgba(255,90,0,0.4);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 35px rgba(255,106,0,0.7);
+    }
+
+    .avatar {
+      height: 120px;
+      width: 120px;
+      margin: 0 auto 15px;
+      border-radius: 15px;
+      overflow: hidden;
+    }
+
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .avatar img:hover {
+      transform: scale(1.1);
+    }
+
+    .brawlers {
+      margin-top: 10px;
+      display: flex;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .brawlers img {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      box-shadow: 0 0 5px rgba(255, 106, 0, 0.5);
+      transition: transform 0.3s ease;
+    }
+
+    .brawlers img:hover {
+      transform: scale(1.1);
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px;
+      color: #888;
+      border-top: 1px solid rgba(255, 106, 0, 0.3);
+    }
+
+    footer .footer-sub {
+      margin-top: 6px;
+      color: #666;
+      font-size: 0.85rem;
+    }
+
+    footer a {
+      color: #ff6a00;
+      font-weight: bold;
+    }
+
+    footer a:hover {
+      color: #ffa500;
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-container-wrapper">
+
+    <a href="https://moi14212869.github.io/Fenyx/" class="logo-link">
+      <img src="https://moi14212869.github.io/Fenyx/logo2.png" class="logo" alt="Fenyx Esport">
+    </a>
+
+    <div class="menu-btn" onclick="toggleMenu()">☰</div>
+
+    <div class="nav-container" id="navMenu">
+      <a href="#about">Académie</a>
+      <a href="#program">Programme</a>
+      <a href="#players">Joueurs</a>
+      <a href="#join">Rejoindre</a>
+      <a href="https://moi14212869.github.io/Fenyx/">Fenyx Esport</a>
+    </div>
+
+  </div>
+</nav>
+
+<!-- HEADER -->
+<header>
+  <div class="logo-extra">
+    <div class="logo-extra-box">
+      <img src="logo3.png" alt="Logo Fenyx Académie">
+    </div>
+  </div>
+
+  <h1>FENYX ACADÉMIE</h1>
+  <p>Former les talents de demain</p>
+  <span class="badge-org">Roster secondaire de Fenyx Esport</span>
+
+  <a href="#join" class="cta">Rejoindre</a>
+</header>
+
+<!-- ABOUT -->
+<section id="about">
+  <h2>🔥 Notre objectif</h2>
+  <p>
+    Fenyx Académie forme les joueurs pour atteindre un niveau compétitif sur Brawl Stars.
+  </p>
+  <p>
+    Fenyx Académie est bien plus qu'un simple centre de formation : c'est le roster secondaire officiel de Fenyx Esport, une véritable passerelle vers le roster principal pour les joueurs les plus prometteurs de l'académie.
+  </p>
+</section>
+
+<!-- PROGRAM -->
+<section id="program">
+  <h2>🎯 Programme</h2>
+
+  <div class="team">
+    <div class="card">
+      <h3>Coaching</h3>
+      <p>Analyse de gameplay</p>
+    </div>
+
+    <div class="card">
+      <h3>Stratégie</h3>
+      <p>Draft et méta</p>
+    </div>
+
+    <div class="card">
+      <h3>Scrims</h3>
+      <p>Matchs d'entraînement</p>
+    </div>
+
+    <div class="card">
+      <h3>Suivi</h3>
+      <p>Progression encadrée</p>
+    </div>
+  </div>
+</section>
+
+<!-- PLAYERS -->
+<section id="players">
+  <h2>🎮 Joueurs Académie</h2>
+
+  <div class="team">
+    <div class="card">
+      <a href="https://brawlfr.fr/stats/player/2CUPLYVR9U" target="_blank">
+        <div class="avatar">
+          <img src="pp2.webp" alt="Avatar du joueur ALOIS11">
+        </div>
+        <h3>FY | ALOIS11</h3>
+        <p>Top brawlers</p>
+        <div class="brawlers">
+          <img src="colt.webp" alt="Colt">
+          <img src="edgar.webp" alt="Edgar">
+          <img src="cordelius.webp" alt="Cordelius">
+        </div>
+      </a>
+    </div>
+
+    <div class="card">
+      <a href="https://brawlfr.fr/stats/player/Y9YPYGQQY" target="_blank">
+        <div class="avatar">
+          <img src="pp69.png" alt="Avatar du joueur str/freestyl">
+        </div>
+        <h3>str/freestyl</h3>
+        <p>Top brawlers</p>
+        <div class="brawlers">
+          <img src="brock.webp" alt="Brock">
+          <img src="mina.webp" alt="Mina">
+          <img src="meg.webp" alt="Meg">
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- JOIN -->
+<section id="join" style="text-align: center;">
+  <h2>🚀 Rejoindre</h2>
+  <p>Tu veux progresser et intégrer le roster secondaire de Fenyx Esport ? Rejoins Fenyx Académie.</p>
+  <a href="postuler.html" class="cta">Postuler</a>
+</section>
+
+<footer>
+  © 2026 Fenyx Académie · roster secondaire de Fenyx Esport
+  <div class="footer-sub">site développé par <a href="https://moi14212869.github.io/onelevel">oneLevel studio</a></div>
+</footer>
+
+<script>
+function toggleMenu() {
+  document.getElementById("navMenu").classList.toggle("show");
+}
+</script>
+
+</body>
+</html>
