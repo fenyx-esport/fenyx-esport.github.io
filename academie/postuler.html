@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Postuler - Fenyx Académie</title>
+
+  <style>
+    * {
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(to bottom, #000000, #2a0000, #000000);
+      color: white;
+      padding-top: 70px;
+    }
+
+    /* NAVBAR */
+    .navbar {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: rgba(0,0,0,0.85);
+      display: flex;
+      justify-content: center;
+      padding: 15px 0;
+      z-index: 1000;
+    }
+
+    .nav-container {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .nav-container a {
+      color: #ff6a00;
+      text-decoration: none;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .nav-container a:hover {
+      color: #ffa500;
+    }
+
+    .logo {
+      height: 45px;
+    }
+
+    /* FORMULAIRE */
+    .form-section {
+      max-width: 500px;
+      margin: 100px auto;
+      background: linear-gradient(to bottom, #3a0000, #000000);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 0 30px rgba(255,106,0,0.6);
+    }
+
+    h1 {
+      text-align: center;
+      color: #ff6a00;
+      margin-bottom: 25px;
+      text-shadow: 0 0 10px rgba(255,106,0,0.7);
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      margin-bottom: 5px;
+      color: #ccc;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 10px;
+      border: none;
+      outline: none;
+      background: #111;
+      color: white;
+    }
+
+    input:focus {
+      box-shadow: 0 0 10px #ff6a00;
+    }
+
+    button {
+      margin-top: 25px;
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      background: #ff6a00;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #ff8c00;
+      box-shadow: 0 0 15px rgba(255,106,0,0.7);
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      color: #888;
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-container">
+    <a href="https://fenyx-esport.github.io">
+      <img src="https://fenyx-esport.github.io/logo2.png" class="logo">
+    </a>
+    <a href="https://fenyx-esport.github.io">Main</a>
+    <a href="index.html">Académie</a>
+  </div>
+</nav>
+
+<!-- FORMULAIRE -->
+<section class="form-section">
+  <h1>Postuler à Fenyx Académie</h1>
+
+  <form action="https://formsubmit.co/fenyx.esport.bs@gmail.com" method="POST">
+
+    <!-- Email -->
+    <label>Email</label>
+    <input type="email" name="email" required>
+
+    <!-- Supercell ID -->
+    <label>Supercell ID</label>
+    <input type="text" name="supercell_id" required>
+    <label>Player Tag</label>
+    <input type="text" name="id" placeholder="#22989JGCUP" required>
+    <!-- Pseudo -->
+    <label>Pseudo</label>
+    <input type="text" name="pseudo" required>
+
+    <!-- Options cachées -->
+    <input type="hidden" name="_subject" value="Nouvelle candidature Fenyx Académie">
+    <input type="hidden" name="_captcha" value="false">
+    <input type="hidden" name="_template" value="table">
+    <input type="hidden" name="_next" value="https://fenyx-esport.github.io/academie/merci.html">
+
+    <!-- Anti-spam -->
+    <input type="text" name="_honey" style="display:none">
+
+    <button type="submit">Envoyer la candidature</button>
+
+  </form>
+</section>
+
+<footer>
+  © <span id="year">2026</span> Fenyx Académie            site développé par <a href="https://onelevel-studio.github.io/">oneLevel studio</a>
+</footer>
+<script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
