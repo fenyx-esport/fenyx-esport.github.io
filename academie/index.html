@@ -6,10 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta property="og:title" content="Fenyx Académie - Roster secondaire de Fenyx Esport">
   <meta property="og:description" content="Découvrez l'académie Fenyx : formation, coaching et scrims pour les futurs talents de Fenyx Esport sur Brawl Stars.">
-  <meta property="og:image" content="https://moi14212869.github.io/Fenyx/logo1.png">
+  <meta property="og:image" content="https://fenyx-esport.github.io/logo1.png">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://moi14212869.github.io/Fenyx/academie/">
-  <link rel="icon" href="https://moi14212869.github.io/Fenyx/logo2.ico" type="image/x-icon">
+  <meta property="og:url" content="https://fenyx-esport.github.io/academie/">
+  <link rel="icon" href="https://fenyx-esport.github.io/logo2.ico" type="image/x-icon">
   <title>Fenyx Académie</title>
 
   <style>
@@ -303,8 +303,8 @@
 <nav class="navbar">
   <div class="nav-container-wrapper">
 
-    <a href="https://moi14212869.github.io/Fenyx/" class="logo-link">
-      <img src="https://moi14212869.github.io/Fenyx/logo2.png" class="logo" alt="Fenyx Esport">
+    <a href="https://fenyx-esport.github.io" class="logo-link">
+      <img src="https://fenyx-esport.github.io/logo2.png" class="logo" alt="Fenyx Esport">
     </a>
 
     <div class="menu-btn" onclick="toggleMenu()">☰</div>
@@ -314,7 +314,7 @@
       <a href="#program">Programme</a>
       <a href="#players">Joueurs</a>
       <a href="#join">Rejoindre</a>
-      <a href="https://moi14212869.github.io/Fenyx/">Fenyx Esport</a>
+      <a href="https://fenyx-esport.github.io">Fenyx Esport</a>
     </div>
 
   </div>
@@ -418,11 +418,12 @@
 </section>
 
 <footer>
-  © 2026 Fenyx Académie · roster secondaire de Fenyx Esport
-  <div class="footer-sub">site développé par <a href="https://moi14212869.github.io/onelevel">oneLevel studio</a></div>
+  © <span id="year">2026</span> Fenyx Académie · roster secondaire de Fenyx Esport
+  <div class="footer-sub">site développé par <a href="https://onelevel-studio.github.io">oneLevel studio</a></div>
 </footer>
 
 <script>
+document.getElementById("year").textContent = new Date().getFullYear();
 function toggleMenu() {
   document.getElementById("navMenu").classList.toggle("show");
 }
