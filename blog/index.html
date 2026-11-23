@@ -328,10 +328,12 @@
   </div>
 
   <footer>
-    © 2026 Fenyx Esport — site développé par
-    <a href="https://moi14212869.github.io/onelevel">oneLevel studio</a>
+    © <span id="year">2026</span> Fenyx Esport — site développé par
+    <a href="https://onelevel-studio.github.io">oneLevel studio</a>
   </footer>
-
+<script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+</script>
   <script type="module">
 const firebaseConfig = {
   apiKey: "AIzaSyDBANOjInM0aUlypnPFn8QVK71YdeTvudc",
