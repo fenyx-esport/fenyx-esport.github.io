@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fenyx Esport – Blog</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <!-- Firebase v10 (compat) CDN -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+  <style>
+    :root {
+      --orange:  #ff6a00;
+      --orange2: #ffa040;
+      --red:     #8b0000;
+      --bg:      #050505;
+      --card:    #0f0f0f;
+      --border:  rgba(255,106,0,.18);
+      --text:    #e0e0e0;
+      --muted:   #777;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      padding-top: 74px;
+      min-height: 100vh;
+    }
+
+    /* ── NAVBAR ── */
+    nav {
+      position: fixed; top:0; left:0; width:100%;
+      background: rgba(0,0,0,.88);
+      backdrop-filter: blur(10px);
+      display: flex; align-items: center;
+      padding: 14px 32px;
+      gap: 28px;
+      z-index: 100;
+      border-bottom: 1px solid var(--border);
+    }
+    nav .logo { height:42px; }
+    nav a {
+      font-family:'Bebas Neue',sans-serif;
+      font-size:1.1rem;
+      letter-spacing:2px;
+      color:#ccc;
+      text-decoration:none;
+      transition:.2s;
+    }
+    nav a:hover { color:var(--orange); }
+    nav a.active { color:var(--orange); }
+    nav .spacer { flex:1; }
+    nav .admin-btn {
+      font-family:'DM Sans',sans-serif;
+      font-size:.82rem;
+      letter-spacing:1px;
+      color:var(--orange);
+      border:1px solid var(--border);
+      padding:6px 16px;
+      border-radius:6px;
+      transition:.2s;
+    }
+    nav .admin-btn:hover { background:rgba(255,106,0,.12); color:var(--orange2); }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      padding: 80px 20px 60px;
+      text-align: center;
+      overflow: hidden;
+    }
+    .hero::before {
+      content:'';
+      position:absolute; inset:0;
+      background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(139,0,0,.45), transparent);
+      pointer-events:none;
+    }
+    .hero-label {
+      font-family:'Bebas Neue',sans-serif;
+      letter-spacing:6px;
+      font-size:.9rem;
+      color:var(--orange);
+      text-transform:uppercase;
+      margin-bottom:12px;
+      opacity:.8;
+    }
+    .hero h1 {
+      font-family:'Bebas Neue',sans-serif;
+      font-size:clamp(3.5rem,10vw,7rem);
+      letter-spacing:10px;
+      color:#fff;
+      text-shadow: 0 0 60px rgba(255,106,0,.5);
+      line-height:1;
+    }
+    .hero h1 span { color:var(--orange); }
+
+    /* ── FILTERS ── */
+    .filters {
+      display:flex; justify-content:center; gap:12px;
+      padding: 0 20px 48px;
+      flex-wrap:wrap;
+    }
+    .filter-btn {
+      font-family:'Bebas Neue',sans-serif;
+      letter-spacing:2px;
+      font-size:1rem;
+      background:none;
+      border:1px solid var(--border);
+      color:#888;
+      padding:8px 24px;
+      border-radius:4px;
+      cursor:pointer;
+      transition:.2s;
+    }
+    .filter-btn:hover { border-color:var(--orange); color:var(--orange); }
+    .filter-btn.active { background:var(--orange); color:#000; border-color:var(--orange); }
+
+    /* ── GRID ── */
+    .posts-grid {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 0 20px 80px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px,1fr));
+      gap: 28px;
+    }
+
+    /* ── CARD ── */
+    .post-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      transition: transform .25s, box-shadow .25s, border-color .25s;
+      cursor: pointer;
+      display:flex; flex-direction:column;
+    }
+    .post-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 0 40px rgba(255,106,0,.22);
+      border-color: rgba(255,106,0,.45);
+    }
+    .post-card .card-type {
+      font-family:'Bebas Neue',sans-serif;
+      letter-spacing:3px;
+      font-size:.75rem;
+      padding:10px 16px 0;
+      text-transform:uppercase;
+    }
+    .post-card .card-type.article { color:var(--orange); }
+    .post-card .card-type.match   { color:#3ebfff; }
+    .post-card .card-body { padding:14px 18px 20px; flex:1; display:flex; flex-direction:column; }
+    .post-card h3 {
+      font-family:'Bebas Neue',sans-serif;
+      font-size:1.45rem;
+      letter-spacing:2px;
+      color:#fff;
+      margin-bottom:8px;
+      line-height:1.2;
+    }
+    .post-card .excerpt {
+      font-size:.88rem;
+      color:var(--muted);
+      line-height:1.6;
+      flex:1;
+    }
+    .post-card .meta {
+      margin-top:16px;
+      display:flex; align-items:center; gap:10px;
+      font-size:.78rem;
+      color:#555;
+    }
+    .post-card .meta .dot { width:4px; height:4px; background:#444; border-radius:50%; }
+
+    /* Match-specific */
+    .match-score {
+      display:flex; align-items:center; gap:12px;
+      margin: 14px 0 10px;
+    }
+    .match-score .team-name {
+      font-family:'Bebas Neue',sans-serif;
+      font-size:1.05rem;
+      letter-spacing:2px;
+      color:#fff;
+    }
+    .match-score .score {
+      font-family:'Bebas Neue',sans-serif;
+      font-size:2rem;
+      letter-spacing:4px;
+      color:var(--orange);
+    }
+    .match-score .vs { font-size:.75rem; color:var(--muted); letter-spacing:2px; }
+    .result-badge {
+      display:inline-block;
+      font-family:'Bebas Neue',sans-serif;
+      letter-spacing:2px;
+      font-size:.8rem;
+      padding:3px 12px;
+      border-radius:3px;
+      margin-bottom:10px;
+    }
+    .result-badge.win  { background:rgba(0,200,80,.15); color:#00c850; border:1px solid rgba(0,200,80,.3); }
+    .result-badge.loss { background:rgba(200,0,0,.15); color:#ff4444; border:1px solid rgba(200,0,0,.3); }
+    .result-badge.draw { background:rgba(200,200,0,.1); color:#cccc00; border:1px solid rgba(200,200,0,.25); }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      display:none;
+      position:fixed; inset:0;
+      background:rgba(0,0,0,.85);
+      backdrop-filter:blur(6px);
+      z-index:500;
+      align-items:center; justify-content:center;
+      padding:20px;
+    }
+    .modal-overlay.open { display:flex; }
+    .modal {
+      background:#111;
+      border:1px solid var(--border);
+      border-radius:16px;
+      max-width:680px; width:100%;
+      max-height:85vh;
+      overflow-y:auto;
+      padding:36px;
+      position:relative;
+      animation:fadeUp .25s ease;
+    }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    .modal-close {
+      position:absolute; top:14px; right:18px;
+      background:none; border:none; color:#555;
+      font-size:1.5rem; cursor:pointer; transition:.2s;
+    }
+    .modal-close:hover { color:var(--orange); }
+    .modal-type {
+      font-family:'Bebas Neue',sans-serif;
+      letter-spacing:4px; font-size:.8rem;
+      margin-bottom:8px;
+    }
+    .modal-type.article { color:var(--orange); }
+    .modal-type.match   { color:#3ebfff; }
+    .modal h2 {
+      font-family:'Bebas Neue',sans-serif;
+      font-size:2rem; letter-spacing:3px;
+      color:#fff; margin-bottom:12px;
+    }
+    .modal .modal-meta {
+      font-size:.8rem; color:#555; margin-bottom:20px;
+    }
+    .modal .modal-body {
+      font-size:.95rem; line-height:1.8;
+      color:#c0c0c0; white-space:pre-wrap;
+    }
+    .modal hr { border:none; border-top:1px solid var(--border); margin:20px 0; }
+
+    /* ── LOADING / EMPTY ── */
+    .state-msg {
+      text-align:center; padding:80px 20px;
+      color:var(--muted); font-size:1rem;
+    }
+    .spinner {
+      width:40px; height:40px;
+      border:3px solid var(--border);
+      border-top-color:var(--orange);
+      border-radius:50%;
+      animation:spin .8s linear infinite;
+      margin:0 auto 16px;
+    }
+    @keyframes spin { to{transform:rotate(360deg)} }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align:center; padding:30px;
+      color:#444; font-size:.82rem;
+      border-top:1px solid var(--border);
+    }
+    footer a { color:var(--orange); text-decoration:none; }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav>
+    <a href="../index.html"><img src="https://fenyx-esport.github.io/logo2.png" class="logo" alt="Fenyx"></a>
+    <a href="https://moi14212869.github.io/Fenyx/">Accueil</a>
+    <a href="#" class="active">Blog</a>
+    <div class="spacer"></div>
+    <a href="admin.html" class="admin-btn">⚙ Admin</a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <p class="hero-label">Fenyx Esport</p>
+    <h1>ACTU<span>&</span>RÉSULTATS</h1>
+  </section>
+
+  <!-- FILTERS -->
+  <div class="filters">
+    <button class="filter-btn active" data-filter="all">Tout</button>
+    <button class="filter-btn" data-filter="article">Articles</button>
+    <button class="filter-btn" data-filter="match">Matchs</button>
+  </div>
+
+  <!-- POSTS GRID -->
+  <div class="posts-grid" id="postsGrid">
+    <div class="state-msg">
+      <div class="spinner"></div>
+      Chargement des articles…
+    </div>
+  </div>
+
+  <!-- MODAL -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modalBox">
+      <button class="modal-close" id="modalClose">✕</button>
+      <p class="modal-type" id="mType"></p>
+      <h2 id="mTitle"></h2>
+      <p class="modal-meta" id="mMeta"></p>
+      <div id="mMatchInfo"></div>
+      <hr>
+      <div class="modal-body" id="mBody"></div>
+    </div>
+  </div>
+
+  <footer>
+    © 2026 Fenyx Esport — site développé par
+    <a href="https://moi14212869.github.io/onelevel">oneLevel studio</a>
+  </footer>
+
+  <script type="module">
+const firebaseConfig = {
+  apiKey: "AIzaSyDBANOjInM0aUlypnPFn8QVK71YdeTvudc",
+  authDomain: "fenyx-9ca56.firebaseapp.com",
+  projectId: "fenyx-9ca56",
+  storageBucket: "fenyx-9ca56.firebasestorage.app",
+  messagingSenderId: "473297020275",
+  appId: "1:473297020275:web:7f009f4b03de22f7911106",
+  measurementId: "G-CM28JYRKWP"
+};
+
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // ── State ──
+    let allPosts = [];
+    let currentFilter = 'all';
+
+    // ── Fetch ──
+    async function loadPosts() {
+      const grid = document.getElementById('postsGrid');
+      try {
+        const snap = await db.collection('posts')
+          .orderBy('createdAt', 'desc')
+          .get();
+
+        allPosts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        renderGrid();
+      } catch(e) {
+        grid.innerHTML = `<div class="state-msg">Erreur de chargement.<br><small>${e.message}</small></div>`;
+      }
+    }
+
+    // ── Render ──
+    function renderGrid() {
+      const grid = document.getElementById('postsGrid');
+      const filtered = currentFilter === 'all'
+        ? allPosts
+        : allPosts.filter(p => p.type === currentFilter);
+
+      if (!filtered.length) {
+        grid.innerHTML = '<div class="state-msg">Aucun article pour l\'instant.</div>';
+        return;
+      }
+
+      grid.innerHTML = filtered.map(p => buildCard(p)).join('');
+
+      grid.querySelectorAll('.post-card').forEach(card => {
+        card.addEventListener('click', () => openModal(card.dataset.id));
+      });
+    }
+
+    function buildCard(p) {
+      const date = p.createdAt?.toDate
+        ? p.createdAt.toDate().toLocaleDateString('fr-FR', {day:'2-digit',month:'short',year:'numeric'})
+        : '—';
+
+      if (p.type === 'match') {
+        const badge = p.result === 'win'  ? '<span class="result-badge win">Victoire</span>'
+                    : p.result === 'loss' ? '<span class="result-badge loss">Défaite</span>'
+                    : '<span class="result-badge draw">Nul</span>';
+        return `
+          <div class="post-card" data-id="${p.id}">
+            <span class="card-type match">⚔ Match</span>
+            <div class="card-body">
+              ${badge}
+              <div class="match-score">
+                <span class="team-name">Fenyx Esport</span>
+                <span class="score">${p.scoreHome ?? '?'} – ${p.scoreAway ?? '?'}</span>
+                <span class="team-name">${p.opponent ?? '???'}</span>
+              </div>
+              <h3>${p.title}</h3>
+              <p class="excerpt">${(p.content ?? '').slice(0,100)}…</p>
+              <div class="meta"><span>${date}</span></div>
+            </div>
+          </div>`;
+      }
+
+      return `
+        <div class="post-card" data-id="${p.id}">
+          <span class="card-type article">📝 Article</span>
+          <div class="card-body">
+            <h3>${p.title}</h3>
+            <p class="excerpt">${(p.content ?? '').slice(0,120)}…</p>
+            <div class="meta">
+              <span>${p.author ?? 'Fenyx'}</span>
+              <span class="dot"></span>
+              <span>${date}</span>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    // ── Modal ──
+    function openModal(id) {
+      const p = allPosts.find(x => x.id === id);
+      if (!p) return;
+
+      const date = p.createdAt?.toDate
+        ? p.createdAt.toDate().toLocaleDateString('fr-FR', {dateStyle:'long'})
+        : '';
+
+      document.getElementById('mType').className = `modal-type ${p.type}`;
+      document.getElementById('mType').textContent = p.type === 'match' ? '⚔ Match' : '📝 Article';
+      document.getElementById('mTitle').textContent = p.title;
+      document.getElementById('mMeta').textContent =
+        p.type === 'article' ? `Par ${p.author ?? 'Fenyx'} · ${date}` : date;
+
+      const matchInfo = document.getElementById('mMatchInfo');
+      if (p.type === 'match') {
+        const badge = p.result === 'win'  ? '<span class="result-badge win">Victoire</span>'
+                    : p.result === 'loss' ? '<span class="result-badge loss">Défaite</span>'
+                    : '<span class="result-badge draw">Nul</span>';
+        matchInfo.innerHTML = `
+          ${badge}
+          <div class="match-score">
+            <span class="team-name">FENYX</span>
+            <span class="score">${p.scoreHome ?? '?'} – ${p.scoreAway ?? '?'}</span>
+            <span class="team-name">${p.opponent ?? '???'}</span>
+          </div>`;
+      } else {
+        matchInfo.innerHTML = '';
+      }
+
+      document.getElementById('mBody').textContent = p.content ?? '';
+      document.getElementById('modalOverlay').classList.add('open');
+    }
+
+    document.getElementById('modalClose').addEventListener('click', () =>
+      document.getElementById('modalOverlay').classList.remove('open'));
+    document.getElementById('modalOverlay').addEventListener('click', e => {
+      if (e.target === document.getElementById('modalOverlay'))
+        document.getElementById('modalOverlay').classList.remove('open');
+    });
+
+    // ── Filters ──
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFilter = btn.dataset.filter;
+        renderGrid();
+      });
+    });
+
+    loadPosts();
+  </script>
+</body>
+</html>
