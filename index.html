@@ -3,19 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fenyx Esport</title>
-  <meta name="description" content="Fenyx Esport : équipe compétitive sur Brawl Stars. Découvrez nos jeux, nos sponsors et retrouvez-nous sur les réseaux sociaux.">
+  <title>Fenyx Esport – Team esport</title>
+  <meta name="description" content="Fenyx Esport : team esport. Découvrez nos jeux, nos sponsors et retrouvez-nous sur les réseaux sociaux.">
   <meta name="theme-color" content="#000000">
   <link rel="canonical" href="https://fenyx-esport.github.io/">
   <meta property="og:locale" content="fr_FR">
   <meta property="og:site_name" content="Fenyx Esport">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Fenyx Esport - Équipe compétitive Brawl Stars">
+  <meta name="twitter:title" content="Fenyx Esport - Team esport">
   <meta name="twitter:image" content="https://fenyx-esport.github.io/logo1.png">
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"SportsTeam","name":"Fenyx Esport","sport":"Esport - Brawl Stars","url":"https://fenyx-esport.github.io/","logo":"https://fenyx-esport.github.io/logo1.png","sameAs":["https://www.instagram.com/fenyx_esport_bs/","https://youtube.com/@FenyxEsport-g5g"]}
+  {"@context":"https://schema.org","@type":"SportsOrganization","name":"Fenyx Esport","sport":"Esport","url":"https://fenyx-esport.github.io/","logo":"https://fenyx-esport.github.io/logo1.png","sameAs":["https://www.instagram.com/fenyx_esport_bs/","https://youtube.com/@FenyxEsport-g5g"]}
   </script>
-  <meta property="og:title" content="Fenyx Esport - Équipe compétitive Brawl Stars">
+  <meta property="og:title" content="Fenyx Esport - Team esport">
   <meta property="og:description" content="Découvrez Fenyx Esport, nos jeux, nos sponsors et nos réseaux.">
   <meta property="og:image" content="https://fenyx-esport.github.io/logo1.png">
   <meta property="og:type" content="website">
@@ -83,7 +83,11 @@
 
     /* Jeux */
     .game{display:flex;align-items:center;gap:32px;max-width:720px;padding:32px clamp(22px,4vw,40px);background:linear-gradient(135deg,var(--ember),var(--panel) 65%);border-top:4px solid var(--fire);box-shadow:inset 0 0 0 1px var(--line),0 0 60px rgba(255,106,0,.12);clip-path:var(--cut)}
-    .game-logo{width:150px;height:110px;flex:none;object-fit:contain}
+    .game-icon{position:relative;flex:none;width:132px;height:132px;display:grid;place-items:center;padding:18px;background:radial-gradient(circle at 50% 35%,rgba(255,106,0,.32),rgba(0,0,0,.65) 72%);border-bottom:3px solid var(--fire);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14),0 0 34px rgba(255,106,0,.3);clip-path:polygon(0 0,calc(100% - 18px) 0,100% 18px,100% 100%,0 100%);transition:box-shadow .25s}
+    .game-icon img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 4px 10px rgba(0,0,0,.6));transition:transform .3s}
+    .game-icon.empty::before{content:attr(data-initials);font-family:var(--display);font-weight:800;font-style:italic;font-size:2.8rem;color:var(--fire)}
+    a.game:hover .game-icon{box-shadow:inset 0 0 0 1px rgba(255,255,255,.2),0 0 46px rgba(255,106,0,.55)}
+    a.game:hover .game-icon img{transform:scale(1.07) rotate(-2deg)}
     .game h3{font-family:var(--display);font-weight:800;font-style:italic;text-transform:uppercase;font-size:clamp(2.2rem,5vw,3.2rem);line-height:1}
     .game p{margin-top:8px;color:var(--soft)}
 
@@ -91,7 +95,7 @@
     a.game:hover{transform:translateY(-4px);box-shadow:inset 0 0 0 1px var(--line),0 0 70px rgba(255,106,0,.3)}
     .game::after{content:"Découvrir";margin-left:auto;font-family:var(--display);font-weight:700;font-size:1.1rem;letter-spacing:.1em;text-transform:uppercase;color:var(--fire)}
     @media(max-width:520px){.game::after{margin-left:0}}
-    @media(prefers-reduced-motion:reduce){a.game:hover{transform:none}}
+    @media(prefers-reduced-motion:reduce){a.game:hover{transform:none}a.game:hover .game-icon img{transform:none}}
 
     /* Sponsors */
     .sponsors{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px}
@@ -148,7 +152,7 @@
       .nav-container a{padding:13px 0;font-size:1.25rem}
       .nav-container a.ext{margin-top:8px;text-align:center}
     }
-    @media(max-width:520px){.game{flex-direction:column;align-items:flex-start;gap:20px}}
+    @media(max-width:520px){.game{flex-direction:column;align-items:flex-start;gap:20px}.game-icon{width:112px;height:112px}}
     @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.hero h1{animation:none}.social-links a:hover{transform:none}}
   </style>
 </head>
@@ -173,7 +177,7 @@
   <div class="hero-inner">
     <div>
       <h1>Fenyx</h1>
-      <p class="hero-sub">Équipe e-sport sur Brawl Stars</p>
+      <p class="hero-sub">Team esport</p>
       <div class="hero-actions">
         <a href="#jeux" class="btn primary">Nos jeux</a>
         <a href="#reseaux" class="btn ghost">Nous suivre</a>
@@ -187,16 +191,17 @@
 
 <main id="contenu">
 <div class="about">
-  <p>Fenyx Esport est une équipe compétitive dédiée à Brawl Stars : entraînements, tournois et contenus à suivre sur nos réseaux.</p>
+  <p>Fenyx Esport est une team esport : compétitions, entraînements et contenus à suivre sur nos réseaux.</p>
 </div>
 
 <section class="section" id="jeux">
   <h2>Jeux</h2>
-  <a class="game" href="https://fenyx-esport.github.io/bs/" aria-label="Brawl Stars : découvrir l’équipe">
-    <img class="game-logo" src="brawlstars.png" alt="Logo Brawl Stars" onerror="this.style.display='none'">
+  <p class="section-intro">Les jeux sur lesquels Fenyx s'entraîne et joue en compétition.</p>
+  <a class="game" href="./brawlstars.html" aria-label="Brawl Stars : découvrir l’équipe">
+    <span class="game-icon" data-initials="BS"><img src="brawlstars.png" alt="Logo Brawl Stars" onerror="this.parentNode.classList.add('empty');this.remove()"></span>
     <div>
       <h3>Brawl Stars</h3>
-      <p>Notre équipe compétitive joue des tournois sur Brawl Stars.</p>
+      <p>Notre équipe joue des tournois sur Brawl Stars.</p>
       <ul class="chips"><li>Mobile</li><li>Compétition</li><li>Équipe active</li></ul>
     </div>
   </a>
@@ -206,16 +211,15 @@
   <h2>Sponsors</h2>
   <p class="section-intro">Les marques qui soutiennent Fenyx.</p>
   <div class="sponsors">
-<a class="slot" href="https://onelevel-studio.github.io" target="_blank" rel="noopener noreferrer">
-  <img src="ols.png" alt="Nom de la marque" loading="lazy">
-</a>    <div class="slot">Votre logo ici</div>
+    <div class="slot">Votre logo ici</div>
+    <div class="slot">Votre logo ici</div>
     <div class="slot">Votre logo ici</div>
     <div class="slot">Votre logo ici</div>
   </div>
   <div class="partner">
     <div>
       <h3>Devenez partenaire</h3>
-      <p>Associez votre marque à une équipe en pleine progression et touchez la communauté Brawl Stars.</p>
+      <p>Associez votre marque à une team en pleine progression et touchez la communauté esport.</p>
     </div>
     <a href="https://www.instagram.com/fenyx_esport_bs/" target="_blank" rel="noopener noreferrer" class="btn primary">Nous contacter</a>
   </div>
@@ -241,7 +245,7 @@
   <div class="foot">
     <div>
       <img src="logo2.png" alt="Fenyx Esport">
-      <p>Équipe compétitive Brawl Stars.</p>
+      <p>Team esport.</p>
     </div>
     <nav aria-label="Pied de page">
       <h3>Navigation</h3>
